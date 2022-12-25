@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+            crossorigin="anonymous"></script>
+    <script th:src="@{/jquery-3.6.3.min.js}"></script>
+    <script th:src="@{/main.js}"></script>
+    <meta charset="UTF-8">
+    <title>Admin</title>
+    <style>
+        #head {
+            background-color: #343A40;
+        }
+
+        #roleMenu {
+            background-color: white;
+            height: 100vh;
+        }
+
+        #content {
+            background-color: #F8F9FA;
+        }
+
+        #logoutBtn {
+            color: #94A39C;
+            text-decoration: none;
+        }
+
+    </style>
+</head>
+
+<body>
+<script>   function sleep(ms) {
+    ms += new Date().getTime();
+    while (new Date() < ms) {
+    }
+}
+
+sleep(100);
+</script>
+<!-- Шапка -->
+<nav class="navbar navbar-dark" id="head">
+    <div class="container-fluid">
+            <span class="navbar-brand rolesPrincipal">
+                <b class="usernamePrincipal"></b>
+                with roles:
+            </span>
+        <a href="/logout" class="me-3 fs-5" id="logoutBtn">Logout</a>
+    </div>
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Меню ролей -->
+        <div class="col-2" id="roleMenu">
+            <div class="container-fluid gx-0">
+                <div class="nav nav-pills flex-column mt-4">
+                    <!--                        Должна показываться только когда роль админ-->
+                    <button class="nav-link active text-start" data-bs-toggle="tab" data-bs-target="#adminPanel"
+                            id="adminButton" hidden
+                    >ADMIN
+                    </button>
+                    <!--                        Когда не содержит роли админ должен быть класс active-->
+                    <button class="nav-link text-start active" data-bs-toggle="tab" data-bs-target="#userInfo"
+                            id="userButton"
+                    >USER
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-10" id="content">
+            <div class="tab-content">
+                <!-- Админ панель должна показываться только когда роль админ-->
+                <div id="adminPanel" class="tab-pane active mx-5" hidden>
+                    <h2 class="my-4">Admin panel</h2>
+                    <!-- Вкладки таблица юзеров новый юзер -->
+                    <ul class="nav nav-tabs" id="navTabsTN">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#userTable">User table</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#newUser">New user</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <!-- Все юзеры -->
+                        <div class="card tab-pane active" id="userTable">
+                            <div class="card-header">
+                                <h4>All users</h4>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-striped align-middle" id="usersTable">
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Roles</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+
+                                </table>
+                            </div>
+                        </div>
+                        <!-- Новый юзер -->
+                        <div class="card tab-pane" id="newUser">
+                            <div class="card-header">
+                                <h4>Add new user</h4>
+                            </div>
+                            <div class="card-body" id="formNewDiv">
+                                <form class="text-center  col-4 container" id="signInForm">
+
+                                    <label class="form-label fw-bold mt-3" for="usernameReg">Username*</label>
+                                    <input class="form-control" type="text" id="usernameReg" required>
+
+                                    <label class="form-label fw-bold mt-3" for="passwordReg">Password*</label>
+                                    <input class="form-control" type="password"
+                                           id="passwordReg" required>
+
+                                    <label class="form-label fw-bold mt-3" for="emailReg">Email</label>
+                                    <input class="form-control" type="email" id="emailReg">
+
+
+                                    <label class="form-label fw-bold mt-3" for="rolesReg">Roles*</label>
+                                    <select id="rolesReg" class="form-select selectReg" multiple size="2" required>
+                                    </select>
+                                    <input value="Sign in" class="btn btn-success mt-3" id="signInBtn" onclick="onSignInButton()">
+                                </form>
+                                <div style="color: red" class="col-4 container text-center mt-3" id="formNewError">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Юзер инфо должен иметь класс active когда роль не содержит админ -->
+                <div id="userInfo" class="tab-pane mx-5 active">
+                    <h2 class="my-4">User information page</h2>
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>About user</h4>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-striped align-middle">
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Roles</th>
+                                </tr>
+                                <tr>
+                                    <td class="idPrincipal"></td>
+                                    <td class="usernamePrincipal"></td>
+                                    <td class="emailPrincipal"></td>
+                                    <td class="rolesPrincipal"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!--                Модальное окно едит-->
+                <div class="modal fade" id="editModal" tabindex="-1" role="dialog"
+                     aria-labelledby="editModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel">Edit
+                                    user</h5>
+                                <button class="btn-close" data-bs-dismiss="modal">
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Форма изменения юзера -->
+                                <form id="editForm"
+
+                                      class="text-center  col-6 container"
+                                >
+                                    <fieldset disabled>
+                                        <label class="form-label fw-bold"
+                                               for="editId">Id</label>
+                                        <input class="form-control" readonly
+                                               type="number" id="editId">
+                                    </fieldset>
+
+                                    <br>
+                                    <label class="form-label fw-bold"
+                                           for="editUsername">Username</label>
+                                    <input class="form-control" type="text"
+                                           id="editUsername">
+                                    <br>
+                                    <label class="form-label fw-bold"
+                                           for="editEmail">Email</label>
+                                    <input class="form-control" type="email"
+                                           id="editEmail">
+                                    <br>
+                                    <label class="form-label fw-bold"
+                                           for="editPassword">Password</label>
+                                    <input class="form-control" type="password"
+                                           id="editPassword">
+                                    <br>
+                                    <label class="form-label fw-bold"
+                                           for="rolesEdit">Roles</label>
+                                    <select id="rolesEdit" class="form-select" multiple
+                                            size="2">
+                                    </select>
+                                </form>
+                                <div style="color: red" class="col-4 container text-center mt-3" id="formEditError">
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close
+                                </button>
+                                <button
+                                        class="btn btn-primary" onclick="onEditBtnForm()">Edit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--                Модальное окно делит-->
+                <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog"
+                     aria-labelledby="deleteModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteModalLabel">
+                                    Delete
+                                    user</h5>
+                                <button class="btn-close" data-bs-dismiss="modal">
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Форма удаления юзера -->
+                                <form id="deleteForm"
+                                      class="text-center  col-6 container"
+                                >
+                                    <fieldset disabled>
+                                        <label class="form-label fw-bold"
+                                               for="deleteId">Id</label>
+                                        <input class="form-control" readonly
+                                               type="number" id="deleteId">
+                                    </fieldset>
+                                    <br>
+                                    <fieldset disabled>
+                                        <label class="form-label fw-bold"
+                                               for="deleteUsername">Username</label>
+                                        <input class="form-control" type="text"
+                                               readonly
+                                               id="deleteUsername">
+                                    </fieldset>
+                                    <br>
+                                    <fieldset disabled>
+                                        <label class="form-label fw-bold"
+                                               for="deleteEmail">Email</label>
+                                        <input class="form-control" type="email"
+                                               readonly id="deleteEmail">
+                                    </fieldset>
+
+                                    <br>
+                                    <fieldset disabled>
+                                        <label class="form-label fw-bold"
+                                               for="deleteRoles">Roles</label>
+                                        <select id="deleteRoles" class="form-select"
+                                                multiple size="2">
+                                        </select>
+                                    </fieldset>
+
+                                </form>
+                                <div style="color: red" class="col-4 container text-center mt-3" id="formDeleteError">
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close
+                                </button>
+                                <button
+                                        class="btn btn-danger" onclick="onDeleteBtnForm()">Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
