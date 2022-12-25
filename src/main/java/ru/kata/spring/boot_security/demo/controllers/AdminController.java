@@ -85,15 +85,7 @@ public class AdminController {
         User user = userService.convertToUser(userDto);
         userValidator.validate(user, bindingResult);
         if(bindingResult.hasErrors()) {
-            List<FieldError> errors = bindingResult.getFieldErrors();
-            StringBuilder stringBuilder = new StringBuilder();
-            for(FieldError error : errors) {
-                stringBuilder
-                        .append(" - ")
-                        .append(error.getDefaultMessage())
-                        .append(";");
-            }
-            throw new UserNotCreatedException(stringBuilder.toString());
+            throw new UserNotCreatedException(bindingResult.getFieldErrors().get(0).getDefaultMessage());
         }
         userService.findById(user.getId()).orElseThrow(UserNotFoundException::new);
         userService.save(user);

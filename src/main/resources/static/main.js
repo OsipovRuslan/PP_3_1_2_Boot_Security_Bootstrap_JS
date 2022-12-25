@@ -134,6 +134,7 @@ async function onSignInButton() {
         updateAllUsers();
         activateTab('userTable');
         resetAddUserForm();
+        $('#formNewError').text('')
     }
 }
 
