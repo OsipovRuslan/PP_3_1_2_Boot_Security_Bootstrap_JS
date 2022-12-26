@@ -5,15 +5,12 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.dto.RoleDto;
 import ru.kata.spring.boot_security.demo.dto.UserDto;
-import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.services.RoleService;
 import ru.kata.spring.boot_security.demo.services.UserService;
-import ru.kata.spring.boot_security.demo.util.UserErrorResponse;
 import ru.kata.spring.boot_security.demo.util.UserNotCreatedException;
 import ru.kata.spring.boot_security.demo.util.UserNotFoundException;
 import ru.kata.spring.boot_security.demo.util.UserValidator;
@@ -63,15 +60,7 @@ public class AdminController {
         User user = userService.convertToUser(userDto);
         userValidator.validate(user, bindingResult);
         if(bindingResult.hasErrors()) {
-            List<FieldError> errors = bindingResult.getFieldErrors();
-            StringBuilder stringBuilder = new StringBuilder();
-            for(FieldError error : errors) {
-                stringBuilder
-                        .append(" - ")
-                        .append(error.getDefaultMessage())
-                        .append(";");
-            }
-            throw new UserNotCreatedException(stringBuilder.toString());
+            throw new UserNotCreatedException(bindingResult);
         }
 
         userService.save(user);
@@ -84,7 +73,7 @@ public class AdminController {
         User user = userService.convertToUser(userDto);
         userValidator.validate(user, bindingResult);
         if(bindingResult.hasErrors()) {
-            throw new UserNotCreatedException(bindingResult.getFieldErrors().get(0).getDefaultMessage());
+            throw new UserNotCreatedException(bindingResult);
         }
         userService.findById(user.getId()).orElseThrow(UserNotFoundException::new);
         userService.save(user);

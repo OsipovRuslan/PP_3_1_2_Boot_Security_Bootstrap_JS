@@ -64,7 +64,7 @@ async function updateAllUsers() {
         onDeleteButton(btn);
     });
     $.each(roles, function (i, value) {
-        $('.form-select').append('<option class="optionNew" value="' + value.role + '">' + value.role.substring(5, value.role.length) + '</option>');
+        $('.form-select').append('<option class="optionNew" value="' + value.id + '">' + value.role.substring(5, value.role.length) + '</option>');
     });
 
 }
@@ -101,7 +101,7 @@ async function onSignInButton() {
     };
     $.each(selected, function (i, value) {
         let role = {
-            role: value
+            id: value
         }
         user.roles.push(role);
     })
@@ -167,7 +167,7 @@ async function onEditBtnForm() {
     };
     $.each(selected, function (i, value) {
         let role = {
-            role: value
+            id: value
         }
         user.roles.push(role);
     })
