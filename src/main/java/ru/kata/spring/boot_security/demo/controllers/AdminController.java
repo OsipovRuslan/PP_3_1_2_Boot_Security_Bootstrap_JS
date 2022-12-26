@@ -39,29 +39,28 @@ public class AdminController {
     }
 
     @GetMapping
-    public List<UserDto> allUsers() {
-        return userService.findAll().stream()
+    public ResponseEntity<List<UserDto>> allUsers() {
+        return new ResponseEntity<>(userService.findAll().stream()
                 .map(userService::convertToUserDto)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @GetMapping("/roles")
-    public List<RoleDto> allRoles() {
-        return roleService.findAll().stream()
+    public ResponseEntity<List<RoleDto>> allRoles() {
+        return new ResponseEntity<>( roleService.findAll().stream()
                 .map(roleService::convertToRoleDto)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public UserDto userById(@PathVariable("id") long id) {
-        return userService.convertToUserDto(userService.findById(id)
-                .orElseThrow(UserNotFoundException::new));
+    public ResponseEntity<UserDto> userById(@PathVariable("id") long id) {
+        return new ResponseEntity<>(userService.convertToUserDto(userService.findById(id)
+                .orElseThrow(UserNotFoundException::new)), HttpStatus.OK) ;
     }
 
     @PostMapping
     public ResponseEntity<HttpStatus> addUser(@RequestBody @Valid UserDto userDto, BindingResult bindingResult) {
         User user = userService.convertToUser(userDto);
-        user.setId(0);
         userValidator.validate(user, bindingResult);
         if(bindingResult.hasErrors()) {
             List<FieldError> errors = bindingResult.getFieldErrors();
@@ -101,19 +100,5 @@ public class AdminController {
         }
 
         return ResponseEntity.ok(HttpStatus.OK);
-    }
-
-    @ExceptionHandler
-    private ResponseEntity<UserErrorResponse> exceptionHandler(UserNotFoundException e) {
-        return new ResponseEntity<>(
-                new UserErrorResponse("User not found"),
-                HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler
-    private ResponseEntity<UserErrorResponse>  exceptionHandler(UserNotCreatedException e) {
-        return new ResponseEntity<>(
-                new UserErrorResponse(e.getMessage()),
-                HttpStatus.BAD_REQUEST);
     }
 }

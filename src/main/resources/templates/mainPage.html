@@ -61,11 +61,11 @@ sleep(100);
                 <div class="nav nav-pills flex-column mt-4">
                     <!--                        Должна показываться только когда роль админ-->
                     <button class="nav-link active text-start" data-bs-toggle="tab" data-bs-target="#adminPanel"
-                            id="adminButton" hidden
+                            id="adminButton"
                     >ADMIN
                     </button>
                     <!--                        Когда не содержит роли админ должен быть класс active-->
-                    <button class="nav-link text-start active" data-bs-toggle="tab" data-bs-target="#userInfo"
+                    <button class="nav-link text-start" data-bs-toggle="tab" data-bs-target="#userInfo"
                             id="userButton"
                     >USER
                     </button>
@@ -75,7 +75,7 @@ sleep(100);
         <div class="col-10" id="content">
             <div class="tab-content">
                 <!-- Админ панель должна показываться только когда роль админ-->
-                <div id="adminPanel" class="tab-pane active mx-5" hidden>
+                <div id="adminPanel" class="tab-pane active mx-5">
                     <h2 class="my-4">Admin panel</h2>
                     <!-- Вкладки таблица юзеров новый юзер -->
                     <ul class="nav nav-tabs" id="navTabsTN">
@@ -138,7 +138,7 @@ sleep(100);
                     </div>
                 </div>
                 <!-- Юзер инфо должен иметь класс active когда роль не содержит админ -->
-                <div id="userInfo" class="tab-pane mx-5 active">
+                <div id="userInfo" class="tab-pane mx-5">
                     <h2 class="my-4">User information page</h2>
                     <div class="card">
                         <div class="card-header">

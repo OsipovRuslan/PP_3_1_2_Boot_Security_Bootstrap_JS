@@ -1,7 +1,5 @@
 "use strict";
 
-let isAdmin = false;
-
 async function getPrincipal() {
     let response = await fetch("http://localhost:8080/user/api/users");
     if(response.status === 500) {
@@ -11,23 +9,8 @@ async function getPrincipal() {
 }
 
 updateFieldsPrincipal(true);
-updateStylesByRole();
-updateAllUsers();
 
-async function updateStylesByRole() {
-    let user = await getPrincipal();
-    $.each(user.roles, function (i, value) {
-        if (value.role === 'ROLE_ADMIN') {
-            isAdmin = true;
-        }
-    });
-    if (isAdmin) {
-        $('#adminButton').removeAttr('hidden');
-        $('#adminPanel').removeAttr('hidden');
-        $('#userButton').removeClass('active');
-        $('#userInfo').removeClass('active');
-    }
-}
+
 
 async function updateFieldsPrincipal(app) {
     let user = await getPrincipal();
@@ -43,6 +26,7 @@ async function updateFieldsPrincipal(app) {
 
 //для админа
 
+updateAllUsers();
 async function getAllUsers() {
     let response = await fetch('http://localhost:8080/admin/api/users');
     return await response.json();

@@ -41,13 +41,7 @@ public class UserServiceImpl implements UserService {
             user.setPassword(userRepository.getById(user.getId()).getPassword());
         else
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-        if(user.getRoles().isEmpty())
-            user.setRoles(userRepository.getById(user.getId()).getRoles());
-        else {
-            Set<Role> roles = user.getRoles().stream().map(role -> roleService.findByRole(role.getRole()).get())
-                    .collect(Collectors.toSet());
-            user.setRoles(roles);
-        }
+
         userRepository.save(user);
     }
 
