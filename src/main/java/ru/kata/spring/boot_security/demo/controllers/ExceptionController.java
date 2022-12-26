@@ -28,12 +28,12 @@ public class ExceptionController {
                 HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler
-    private ResponseEntity<UserErrorResponse> exceptionHandler(EntityNotFoundException e) {
-        return new ResponseEntity<>(
-                new UserErrorResponse(e.getMessage()),
-                HttpStatus.BAD_REQUEST);
-
-    }
+//    @ExceptionHandler
+//    private ResponseEntity<UserErrorResponse> exceptionHandler(EntityNotFoundException e) {
+//        return new ResponseEntity<>(
+//                new UserErrorResponse(e.getMessage()),
+//                HttpStatus.BAD_REQUEST);
+//
+//    }
 
 }
